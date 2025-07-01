@@ -1,0 +1,45 @@
+# Dossiers et fichiers à ignorer pour le scraper de profils LinkedIn
+
+# Dossier des anciens fichiers
+/old_files/
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.bak
+
+# Résultats de tests et fichiers de données temporaires
+/test_*/
+*_test_*
+Test_Resultats_*.xlsx
+
+# Fichiers de log
+*.log
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Environnements virtuels
+venv/
+env/
+.env/
+
+# Fichiers de configuration personnels
+.vscode/
+.idea/
+
+# Fichiers de cache du navigateur
+.selenium/
+
+# Fichiers Excel de résultats (facultatif - à décommenter si vous ne voulez pas les suivre)
+# *.xlsx
+
+# Fichiers de debug
+debug_*.py
+debug_*.bat

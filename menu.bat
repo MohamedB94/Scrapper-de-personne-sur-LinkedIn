@@ -34,7 +34,10 @@ goto menu
 echo.
 echo 🔍 Lancement de la recherche de profils (mode rapide)...
 echo.
-call recherche_avec_ajout.bat
+set /p job_title="Intitulé de poste à rechercher: "
+set /p count="Nombre de profils à extraire (défaut: 5): "
+if "%count%"=="" set count=5
+python profile_scraper_2024.py --job "%job_title%" --count %count% --output "Resultats_Profils.xlsx"
 pause
 goto menu
 
@@ -42,15 +45,30 @@ goto menu
 echo.
 echo 🐌 Lancement de la recherche anti-CAPTCHA (mode lent)...
 echo.
-call recherche_anti_captcha.bat
+set /p job_title="Intitulé de poste à rechercher: "
+set /p count="Nombre de profils à extraire (défaut: 5): "
+if "%count%"=="" set count=5
+python profile_scraper_2024.py --job "%job_title%" --count %count% --output "Resultats_Profils.xlsx" --slow
 pause
 goto menu
 
 :ajout_manuel
 echo.
-echo ✏️ Lancement de l'ajout manuel de profils...
+echo ✏️ Ajout manuel d'un profil professionnel
 echo.
-call ajouter_profils.bat
+set /p job_title="Intitulé de poste: "
+set /p firstname="Prénom: "
+set /p lastname="Nom: "
+set /p company="Entreprise: "
+set /p linkedin="URL LinkedIn (optionnel): "
+set /p notes="Notes (optionnel): "
+
+echo.
+echo Ajout du profil: %firstname% %lastname% (%company%)...
+echo.
+
+python -c "import pandas as pd; from datetime import datetime; data = pd.DataFrame({'Intitulé de poste': ['%job_title%'], 'Prénom': ['%firstname%'], 'Nom': ['%lastname%'], 'Entreprise': ['%company%'], 'LinkedIn': ['%linkedin%'], 'Date d''ajout': [datetime.now().strftime('%%Y-%%m-%%d %%H:%%M:%%S')], 'Notes': ['%notes%']}); try: old_data = pd.read_excel('Resultats_Profils.xlsx'); data = pd.concat([old_data, data], ignore_index=True); except: pass; data.to_excel('Resultats_Profils.xlsx', index=False); print('✓ Profil ajouté avec succès')"
+
 pause
 goto menu
 
@@ -68,30 +86,35 @@ echo ================================================
 echo               AIDE ET DOCUMENTATION
 echo ================================================
 echo.
-echo 📖 GUIDES DISPONIBLES:
+echo 📖 DOCUMENTATION:
 echo.
-echo • README.md - Documentation complète
-echo • STRUCTURE_PROJET.md - Structure des fichiers
+echo • README.md - Documentation complète du projet
 echo.
 echo 🎯 UTILISATION RAPIDE:
 echo.
 echo 1. Commencez par "Installer les dépendances" (option 4)
-echo 2. Utilisez "Recherche anti-CAPTCHA" (option 2) si vous avez des CAPTCHAs
-echo 3. Sinon utilisez "Rechercher des profils" (option 1) pour plus rapide
-echo 4. Ou "Ajouter des profils manuellement" (option 3) pour saisie manuelle
+echo 2. Utilisez "Rechercher des profils" (option 1) pour mode rapide
+echo 3. Utilisez "Recherche anti-CAPTCHA" (option 2) si vous rencontrez des CAPTCHAs
+echo 4. Utilisez "Ajouter des profils manuellement" (option 3) pour saisie directe
 echo.
 echo 📊 FICHIER DE RÉSULTATS:
 echo • Tous les profils sont sauvés dans "Resultats_Profils.xlsx"
 echo • Structure: Intitulé, Prénom, Nom, Entreprise, LinkedIn, Date, Notes
-echo • ❌ PLUS D'EMAILS - Contact direct via LinkedIn uniquement
 echo • Le fichier s'enrichit à chaque recherche sans perte de données
 echo.
-echo 🔗 NOUVELLE PHILOSOPHIE:
-echo • Plus de génération ou enrichissement d'emails
-echo • Contact professionnel direct via LinkedIn
-echo • Plus éthique et conforme aux attentes actuelles
-echo • Données LinkedIn réelles extraites des profils
+echo 🧩 STRUCTURE DU PROJET:
+echo • profile_scraper_2024.py - Script principal d'extraction
+echo • Resultats_Profils.xlsx - Fichier de résultats
+echo • Roles_Data.xlsx - Liste de rôles pour recherche multiple (optionnel)
+echo • requirements.txt - Liste des dépendances Python
 echo.
+echo 📋 OPTIONS DE RECHERCHE:
+echo • Mode rapide: Extraction standard des profils
+echo • Mode anti-CAPTCHA: Délais plus longs pour éviter les détections
+echo • Ajout manuel: Saisie directe des informations de profil
+echo.
+pause
+goto menu
 echo 🔍 ANTI-CAPTCHA:
 echo • Le mode anti-CAPTCHA (option 2) est plus lent mais évite les blocages
 echo • Il utilise des délais humains et bascule en simulation si nécessaire

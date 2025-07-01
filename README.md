@@ -1,90 +1,120 @@
-# Fichier README.md
+# LinkedIn Profile Scraper
 
-# Scraper de Profils Professionnels
+## Description
 
-Ce script permet de rechercher des profils professionnels à partir d'intitulés de postes spécifiques.
-Il extrait les noms, prénoms, entreprises et profils LinkedIn pour permettre un contact direct
-via LinkedIn.
+Ce projet permet d'extraire des profils LinkedIn à partir de recherches Google, en se basant sur des intitulés de postes. Il extrait les noms, prénoms et entreprises des profils trouvés, puis les enregistre dans un fichier Excel.
 
-**🔗 NOUVELLE PHILOSOPHIE : Contact professionnel exclusivement via LinkedIn**
+## Fonctionnalités
+
+- Recherche de profils LinkedIn par intitulé de poste
+- Extraction fiable des noms, prénoms et entreprises
+- Validation des données pour éviter les valeurs génériques
+- Export des résultats au format Excel
+- Protection contre les CAPTCHA de Google
 
 ## Prérequis
 
 - Python 3.6 ou supérieur
+- Google Chrome installé
 - Les bibliothèques Python suivantes :
   - pandas
   - selenium
   - webdriver-manager
-  - openpyxl (pour le support Excel)
+  - openpyxl
+  - argparse
+  - requests
 
-## Installation Rapide
+## Fichiers du projet
 
-1. Utilisez le menu principal : `menu.bat`
-2. Choisissez "Installer les dépendances" (option 4)
+- `profile_scraper_2024.py` - Script principal pour l'extraction de profils
+- `Resultats_Profils.xlsx` - Fichier de résultats (créé automatiquement)
+- `Roles_Data.xlsx` - Fichier contenant des rôles à rechercher (optionnel)
+- `requirements.txt` - Liste des dépendances Python
+- `menu.bat` - Menu interactif pour faciliter l'utilisation
+- `install_dependencies.bat` - Script d'installation des dépendances
 
-Ou manuellement :
+## Installation
 
+```bash
+# Installer les dépendances requises
+pip install selenium pandas openpyxl
 ```
-pip install pandas selenium webdriver-manager openpyxl
-```
-
-Chrome doit être installé sur votre système (le script utilise ChromeDriver)
 
 ## Utilisation
 
-### Via le Menu Principal (Recommandé)
+### Recherche simple
 
-Exécutez `menu.bat` pour accéder au menu interactif avec toutes les options.
-
-### En ligne de commande
-
-#### Rechercher des profils pour un intitulé de poste spécifique
-
-```
-python profile_scraper.py --job "Directeur Marketing" --count 10 --output resultats.xlsx
+```bash
+python profile_scraper_2024.py --job "data engineer" --count 10 --output "Resultats_Profils.xlsx"
 ```
 
-#### Lire les intitulés de postes à partir d'un fichier Excel existant
+### Options disponibles
+
+- `--job` ou `-j` : Intitulé du poste à rechercher
+- `--count` ou `-c` : Nombre de résultats à extraire (défaut: 5)
+- `--output` ou `-o` : Fichier Excel de sortie (défaut: "Resultats_Profils.xlsx")
+- `--input` ou `-i` : Fichier Excel existant à enrichir (optionnel)
+- `--slow` : Mode lent avec délais supplémentaires pour éviter les CAPTCHA
+
+### Modes de recherche
+
+#### Mode rapide (par défaut)
+
+```bash
+python profile_scraper_2024.py --job "data engineer" --count 10
+```
+
+#### Mode anti-CAPTCHA (lent mais plus fiable)
+
+```bash
+python profile_scraper_2024.py --job "data engineer" --count 10 --slow
+```
+
+Ce mode utilise des délais plus longs entre les actions pour éviter d'être détecté comme un robot.
+
+## Exemple de résultats
+
+Le script génère un fichier Excel avec les colonnes suivantes:
+
+- Intitulé de poste
+- Prénom
+- Nom
+- Entreprise
+- LinkedIn (URL du profil)
+- Date d'ajout
+- Notes
+
+## Performance
+
+- Le scraper utilise une approche multistratégie pour s'adapter aux changements de structure de Google
+- Les techniques anti-détection minimisent les risques de rencontrer des CAPTCHA
+- Les patterns d'extraction sont optimisés pour reconnaître divers formats de profils LinkedIn
+
+## Résolution de problèmes
+
+- Si vous rencontrez des CAPTCHA, essayez d'exécuter le script moins fréquemment
+- Pour améliorer la qualité des résultats, ajustez le nombre de profils recherchés
+- En cas de problème d'extraction, vérifiez que Chrome est bien installé et à jour
+
+## Notes importantes
+
+- Ce script respecte les conditions d'utilisation de Google et LinkedIn en limitant la fréquence des requêtes
+- L'extraction est basée uniquement sur les informations publiquement accessibles via Google
+- Le scraper est configuré pour éviter la détection automatique et minimiser l'impact sur les serveurs
+
+## Exemple d'exécution réussie
 
 ```
-python profile_scraper.py --input Roles_Data.xlsx --output resultats_enrichis.xlsx --count 5
+🔍 Recherche Google pour: data engineer
+📄 Chargement de Google...
+✓ Consentement cookies accepté
+🔤 Recherche tapée: site:linkedin.com/in/ data engineer
+📊 Analyse des résultats...
+✓ 20 liens LinkedIn trouvés
+  📄 Analyse du profil 1...
+    ✓ Profil extrait: Jean-Baptiste Braun chez KLM
+  📄 Analyse du profil 2...
+    ✓ Profil extrait: Sandro Gazzo chez eXalt
+  📄 Analyse du profil 3...
+    ✓ Profil extrait: Alexis Da Costa chez Devoteam A Cloud
 ```
-
-### Arguments
-
-- `--input` ou `-i` : Fichier Excel contenant les données existantes
-- `--output` ou `-o` : Fichier Excel de sortie (par défaut: "Resultats_Profils.xlsx")
-- `--job` ou `-j` : Intitulé de poste à rechercher
-- `--count` ou `-c` : Nombre de résultats à récupérer par intitulé de poste (par défaut: 5)
-
-## Structure du fichier Excel
-
-Le script génère un fichier Excel avec les colonnes suivantes :
-
-- **Intitulé de poste** : Le poste recherché
-- **Prénom** : Prénom de la personne
-- **Nom** : Nom de famille de la personne
-- **Entreprise** : Société où travaille la personne
-- **LinkedIn** : URL du profil LinkedIn (pour contact direct)
-- **Date d'ajout** : Date et heure d'ajout du profil
-- **Notes** : Champ libre pour vos annotations
-
-## Migration depuis l'ancienne version
-
-✅ **MIGRATION TERMINÉE** - Si vous aviez d'anciens fichiers Excel avec emails, ils ont été automatiquement mis à jour.
-
-## Remarques importantes
-
-- **🚫 PLUS D'EMAILS** : Ce script ne génère plus d'adresses email
-- **🔗 Contact via LinkedIn** : Approche plus professionnelle et éthique
-- **⚡ Mode Anti-CAPTCHA** : Utilise des délais humains pour éviter les blocages
-- **💾 Sauvegarde automatique** : Les données s'accumulent sans perte
-- **🎯 Version simplifiée** : Interface épurée pour usage professionnel
-
-## Avertissement et Éthique
-
-L'utilisation de ce script pour collecter des données personnelles peut être soumise à des restrictions légales selon votre pays. Assurez-vous de respecter le RGPD en Europe ou d'autres lois similaires dans votre juridiction.
-
-**Contact via LinkedIn uniquement** : Cette approche respecte mieux la vie privée et les préférences de contact professionnel des personnes.
-
-Ce script est fourni à des fins éducatives et professionnelles uniquement.
